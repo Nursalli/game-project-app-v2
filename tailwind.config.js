@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+const defaultTheme = require("tailwindcss/defaultTheme");
 module.exports = {
   content: [
     "./pages/**/*.{js,ts,jsx,tsx}",
@@ -90,6 +91,7 @@ module.exports = {
       10: "2.5rem",
       11: "2.75rem",
       12: "3rem",
+      12.5:"3.2rem",
       14: "3.5rem",
       16: "4rem",
       20: "5rem",
@@ -388,6 +390,7 @@ module.exports = {
         '"Courier New"',
         "monospace",
       ],
+      primary: ["Montserrat", ...defaultTheme.fontFamily.sans],
     },
     fontSize: {
       xs: ["0.75rem", { lineHeight: "1rem" }],
