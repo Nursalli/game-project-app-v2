@@ -12,6 +12,10 @@ body {
     Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 
+.dropdown:hover .dropdown-menu {
+  display: block;
+ }
+
 input {
   -webkit-appearance: none;
   text-align: left;
