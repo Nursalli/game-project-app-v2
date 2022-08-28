@@ -8,48 +8,6 @@ function Index() {
   const [startDate, setStartDate] = useState(new Date());
   return (
     <Layouts title="Edit Profile">
-      <style>
-        {`
-          input{
-            -webkit-appearance: none;
-            text-align: left;
-            -webkit-rtl-ordering:  left;
-          }
-          input::-webkit-file-upload-button{
-            -webkit-appearance: none;
-            float: right;
-            margin: 0 0 0 10px;
-            border: 1px solid #aaaaaa;
-            border-radius: 4px;
-          }
-
-          .react-datepicker__input-container input {
-            border-radius: 0.25rem; 
-            border-width: 1px; 
-            border-color: #D1D5DB; 
-            border-style: solid; 
-            padding-top: 0.375rem;
-            padding-bottom: 0.375rem; 
-            padding-left: 0.75rem;
-            padding-right: 0.75rem; 
-            margin: 0;
-          }
-
-          .react-datepicker-wrapper,
-          .react-datepicker__input-container,
-          .react-datepicker__input-container input {
-            display: block; 
-            background-clip: padding-box; 
-            background-color: #ffffff; 
-            transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform; 
-            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); 
-            color: #374151; 
-            font-size: 1rem;
-            line-height: 1.5rem; 
-            font-weight: 400; 
-            width: 100%;
-          }`}
-      </style>
       <div className="flex h-screen lg:h-full justify-center items-center">
         <div className="flex h-screen justify-center items-center w-full">
           <div className="m-auto w-1/2">
