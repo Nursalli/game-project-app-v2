@@ -1,0 +1,82 @@
+[
+  {
+    "id": 9999999,
+    "name": "Jasmine Avery",
+    "email": "jasmineavery@email.com",
+    "profile_pic": null,
+    "badge": "Platinum",
+    "points": 1000
+  },
+  {
+    "id": 9999999,
+    "name": "Keith Cornish",
+    "email": "keithcornish@email.com",
+    "profile_pic": null,
+    "badge": "Platinum",
+    "points": 900
+  },
+  {
+    "id": 9999999,
+    "name": "Dylan Manning",
+    "email": "dylanmanning@email.com",
+    "profile_pic": null,
+    "badge": "Platinum",
+    "points": 800
+  },
+  {
+    "id": 9999999,
+    "name": "Dylan Manning",
+    "email": "dylanmanning@email.com",
+    "profile_pic": null,
+    "badge": "Platinum",
+    "points": 700
+  },
+  {
+    "id": 9999999,
+    "name": "Adrian Murray",
+    "email": "adrianmurray@email.com",
+    "profile_pic": null,
+    "badge": "Platinum",
+    "points": 600
+  },
+  {
+    "id": 9999999,
+    "name": "Diane Dickens",
+    "email": "dianedickens@email.com",
+    "profile_pic": null,
+    "badge": "Gold",
+    "points": 500
+  },
+  {
+    "id": 9999999,
+    "name": "Nicola Sanderson",
+    "email": "nicolasanderson@email.com",
+    "profile_pic": null,
+    "badge": "Gold",
+    "points": 400
+  },
+  {
+    "id": 9999999,
+    "name": "Michelle Baker",
+    "email": "michellebaker@email.com",
+    "profile_pic": null,
+    "badge": "Gold",
+    "points": 300
+  },
+  {
+    "id": 9999999,
+    "name": "Victoria Lyman",
+    "email": "victorialyman@email.com",
+    "profile_pic": null,
+    "badge": "Bronze",
+    "points": 100
+  },
+  {
+    "id": 9999999,
+    "name": "Oliver Bower",
+    "email": "oliverbower@email.com",
+    "profile_pic": null,
+    "badge": "Bronze",
+    "points": 50
+  }
+]
