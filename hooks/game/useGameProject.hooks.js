@@ -1,8 +1,9 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { setIsLoading, setIsError, setErrMsg } from "../../reducer/app.reducer";
+import { setStateToken, setStateId, setStateName, setStateEmail, setStateProfilePic } from "../../reducer/user.reducer";
 
-import { postLogin, postRegister } from "../../services/post-login-register";
+import { postLogin, postRegister, postLoginState } from "../../services/post-login-register";
 import { useState } from "react";
 import Swal from "sweetalert2";
 
@@ -31,8 +32,13 @@ export const useGameProject = () => {
         title: "Login Berhasil",
         timer: 2500,
       });
+      const resultState = await postLoginState(result.data.data.token);
+      dispatch(setStateToken(result.data?.data?.token));
+      dispatch(setStateId(result.data?.data?.userId));
+      dispatch(setStateName(resultState.data?.data?.firstName + " " + resultState.data?.data?.lastName));
+      dispatch(setStateEmail(resultState.data?.data?.email));
+      dispatch(setStateProfilePic(resultState.data?.data?.profile_pic || "/img/profile-picture.jpg"));
       router.push("/");
-      localStorage.setItem("token", result.data?.data?.token);
     } else {
       dispatch(setIsLoading(false));
       dispatch(setErrMsg(result.response?.data?.message || "something wrong!"));

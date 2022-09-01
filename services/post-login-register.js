@@ -9,6 +9,21 @@ const postLogin = async (data) => {
   }
 };
 
+const postLoginState = async (data) => {
+  try {
+    var config = {
+      method: 'post',
+      url: process.env.NEXT_PUBLIC_BASE_URL + "users/validate",
+      headers: { 
+        'Authorization': `Bearer ${data}`
+      }
+    };
+    return await axios(config);
+  } catch (error) {
+    return error;
+  }
+};
+
 const postRegister = async (data) => {
   try {
     const url = process.env.NEXT_PUBLIC_BASE_URL + "users/register";
@@ -17,4 +32,4 @@ const postRegister = async (data) => {
     return error;
   }
 };
-export { postLogin, postRegister };
+export { postLogin, postRegister, postLoginState };
