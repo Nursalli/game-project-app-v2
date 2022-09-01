@@ -43,7 +43,10 @@ export const useProfileEditService = () => {
     if (!file) {
       return "";
     } else {
-      const storageRef = ref(storage, `/profile-picture/${file.name}`);
+      const storageRef = ref(
+        storage,
+        `/profile-picture/${Date.now()}-${file.name}`
+      );
       const uploadTask = uploadBytesResumable(storageRef, file);
 
       uploadTask.on(
