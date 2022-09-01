@@ -18,20 +18,42 @@ import {
 import Loading from "../../../components/Loading";
 import { useProfileEditService } from "./services/service";
 import { useRouter } from "next/router";
+import Swal from "sweetalert2";
 
 function Index() {
   const { isLoading } = useSelector((state) => state.app);
   const dispatch = useDispatch();
   const router = useRouter();
   const { user } = useSelector((state) => state.profileEdit);
-  const { handleGetBio, handlePostEditProfile } = useProfileEditService();
+  const { handleGetBio, handlePostEditProfile, handleUpload } =
+    useProfileEditService();
   const [file, setFile] = useState(undefined);
+  const [ableChange, setAbleChange] = useState(false);
 
   function handleChange(event) {
     if (event.target.files.length > 0) {
+      setAbleChange(true);
       setFile(event.target.files[0]);
     }
   }
+
+  useEffect(() => {
+    if (ableChange) {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You will upload this image",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, upload it!",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          await handleUpload(file);
+        }
+      });
+    }
+  }, [file]);
 
   useEffect(() => {
     const fetchData = async () => {

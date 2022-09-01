@@ -40,7 +40,10 @@ export const useProfileEditService = () => {
   };
 
   const handleUpload = async (file) => {
+    dispatch(setIsLoading(true));
     if (!file) {
+      console.log(file);
+      dispatch(setIsLoading(false));
       return "";
     } else {
       const storageRef = ref(
@@ -62,9 +65,10 @@ export const useProfileEditService = () => {
             const profilePictureUrl = url;
             if (profilePictureUrl !== undefined || profilePictureUrl !== "") {
               dispatch(setProfilePic(profilePictureUrl));
-              await postUpdateProfilePic({
+              const response = await postUpdateProfilePic({
                 profilePic: profilePictureUrl,
               });
+              await handleResponse(response);
             }
             return profilePictureUrl;
           });
@@ -82,7 +86,6 @@ export const useProfileEditService = () => {
 
   const handlePostEditProfile = async (file) => {
     dispatch(setIsLoading(true));
-    await handleUpload(file);
     const response = await postEditProfile(user);
     await handleResponse(response);
   };
