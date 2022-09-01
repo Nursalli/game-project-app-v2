@@ -15,7 +15,7 @@ import { setUser, setProfilePic } from "../reducer/profile-edit.reducer";
 import { storage } from "../../../../utils/firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
-export const profileEditService = () => {
+export const useProfileEditService = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.profileEdit);
 

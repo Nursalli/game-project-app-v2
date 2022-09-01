@@ -16,7 +16,7 @@ import {
   setCountry,
 } from "./reducer/profile-edit.reducer";
 import Loading from "../../../components/Loading";
-import { profileEditService } from "./services/service";
+import { useProfileEditService } from "./services/service";
 import { useRouter } from "next/router";
 
 function Index() {
@@ -24,7 +24,7 @@ function Index() {
   const dispatch = useDispatch();
   const router = useRouter();
   const { user } = useSelector((state) => state.profileEdit);
-  const { handleGetBio, handlePostEditProfile } = profileEditService();
+  const { handleGetBio, handlePostEditProfile } = useProfileEditService();
   const [file, setFile] = useState(undefined);
 
   function handleChange(event) {
