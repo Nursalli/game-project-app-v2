@@ -15,7 +15,7 @@ export default function Navbar() {
   const [email, setEmail] = useState(useSelector((state) => state.user.email) || "");
   const [name, setName] = useState(useSelector((state) => state.user.name) || "");
   const [profilePic, setProfilePic] = useState(useSelector((state) => state.user.profilePic) || "/img/profile-picture.jpg");
-  const [totalScore, setTotalScore] = useState(0);
+  const [totalScore, setTotalScore] = useState("");
 
   useEffect(() => {
     setToken(localStorage.getItem("token"));
@@ -43,14 +43,14 @@ export default function Navbar() {
   }, [token]);
 
   useEffect(() => {
-    if (token !== "") {
+    if (token !== "" && userId) {
       const config = {
         headers: {
           Authorization: "Bearer " + token,
         },
       };
       axios
-        .get(process.env.NEXT_PUBLIC_BASE_URL + "users/badges-points/" + userId, "", config)
+        .get(process.env.NEXT_PUBLIC_BASE_URL + "users/badges-points/" + userId, config)
         .then((res) => {
           setTotalScore(res.data?.data?.points);
         })
