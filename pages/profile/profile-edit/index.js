@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Layouts from "../../../components/Layout";
-import Input from "./components/Input";
+import Input from "../../../module/profile/components/Input";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Navbar from "../../../components/Navbar";
@@ -14,9 +14,9 @@ import {
   setBio,
   setBirthday,
   setCountry,
-} from "./reducer/profile-edit.reducer";
+} from "../../../module/profile/reducer/profile-edit.reducer";
 import Loading from "../../../components/Loading";
-import { useProfileEditService } from "./services/service";
+import { useProfileEditService } from "../../../module/profile/services/service";
 import { useRouter } from "next/router";
 import Swal from "sweetalert2";
 

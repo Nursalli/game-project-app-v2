@@ -8,11 +8,11 @@ import {
   setIsLoading,
   setIsError,
   setErrMsg,
-} from "../../../../reducer/app.reducer";
+} from "../../../reducer/app.reducer";
 import Swal from "sweetalert2";
 import { setUser, setProfilePic } from "../reducer/profile-edit.reducer";
 
-import { storage } from "../../../../utils/firebase";
+import { storage } from "../../../utils/firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 export const useProfileEditService = () => {

@@ -1,5 +1,5 @@
-import fetchApi from "../../../../utils/fetchApi";
-import authUser from "../../../../utils/authUser";
+import fetchApi from "../../../utils/fetchApi";
+import authUser from "../../../utils/authUser";
 
 const getBio = async () => {
   let response = await fetchApi({
