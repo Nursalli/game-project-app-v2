@@ -86,12 +86,22 @@ function Index() {
                   onClick={handleLogin}
                 />
               </div>
-              <div className="flex items-center justify-center mb-12.5">
+              <div className="flex items-center justify-center mb-2.5">
                 <Button
                   className="bg-gradient-to-r from-purple-500 to-orange-600"
                   icon={GoogleIcon}
                   auth={true}
                 />
+              </div>
+              <div className="flex items-center justify-center mb-12.5">
+                <Link href={"/forgot-password"}>
+                  <a
+                    className="text-orange-600 hover:text-white transition duration-300 ease-in-out"
+                    href=""
+                  >
+                    Forgot Password
+                  </a>
+                </Link>
               </div>
             </div>
           </form>

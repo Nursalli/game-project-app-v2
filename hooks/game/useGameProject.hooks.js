@@ -7,6 +7,8 @@ import { postLogin, postRegister } from "../../services/post-login-register";
 import { useState } from "react";
 import Swal from "sweetalert2";
 
+import { useFirebaseService } from "../../services/firebase";
+
 export const useGameProject = () => {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -16,6 +18,7 @@ export const useGameProject = () => {
   const [lastName, setLastName] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const { isLoading, isError, errMsg } = useSelector((state) => state.app);
+  const { registerFirebase } = useFirebaseService();
 
   const handleLogin = async (e) => {
     dispatch(setIsLoading(true));
@@ -34,7 +37,7 @@ export const useGameProject = () => {
       });
       dispatch(setStateToken(result.data?.data?.token));
       dispatch(setStateId(result.data?.data?.userId));
-      localStorage.setItem("token", result.data?.data?.token);      
+      localStorage.setItem("token", result.data?.data?.token);
       router.push("/");
     } else {
       dispatch(setIsLoading(false));
@@ -59,10 +62,11 @@ export const useGameProject = () => {
     };
     const result = await postRegister(data);
     if (result.data?.success) {
+      registerFirebase(email, password);
       dispatch(setIsLoading(false));
       Swal.fire({
         icon: "success",
-        title: "Login Berhasil",
+        title: "Register Berhasil",
         timer: 2500,
       });
       router.push("/login");
