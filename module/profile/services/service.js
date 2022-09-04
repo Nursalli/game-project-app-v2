@@ -11,9 +11,15 @@ import {
 } from "../../../reducer/app.reducer";
 import Swal from "sweetalert2";
 import { setUser, setProfilePic } from "../reducer/profile-edit.reducer";
+import {
+  setMyGames,
+  setHistories,
+  setBadgesPoints,
+} from "../reducer/profile.reducer";
 
 import { storage } from "../../../utils/firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { getMyGames, getMyHistories, getBagdesPoints } from "../api/profile";
 
 export const useProfileEditService = () => {
   const dispatch = useDispatch();
@@ -77,8 +83,8 @@ export const useProfileEditService = () => {
     }
   };
 
-  const handleGetBio = async () => {
-    const response = await getBio();
+  const handleGetBio = async (id) => {
+    const response = await getBio(id);
     if (response.success === true) {
       dispatch(setUser(response.data));
     }
@@ -90,9 +96,33 @@ export const useProfileEditService = () => {
     await handleResponse(response);
   };
 
+  const handleGetMyGames = async (id) => {
+    const response = await getMyGames(id);
+    if (response.success === true) {
+      dispatch(setMyGames(response.data));
+    }
+  };
+
+  const handleGetMyHistories = async (id) => {
+    const response = await getMyHistories(id);
+    if (response.success === true) {
+      dispatch(setHistories(response.data));
+    }
+  };
+
+  const handleGetBagdesPoints = async (id) => {
+    const response = await getBagdesPoints(id);
+    if (response.success === true) {
+      dispatch(setBadgesPoints(response.data));
+    }
+  };
+
   return {
     handleUpload,
     handleGetBio,
     handlePostEditProfile,
+    handleGetMyGames,
+    handleGetMyHistories,
+    handleGetBagdesPoints,
   };
 };

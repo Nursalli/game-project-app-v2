@@ -1,9 +1,8 @@
 import fetchApi from "../../../utils/fetchApi";
-import authUser from "../../../utils/authUser";
 
-const getBagdesPoints = async () => {
+const getBagdesPoints = async (id) => {
   let response = await fetchApi({
-    uriPath: "/users/badges-points/" + (await authUser()),
+    uriPath: "/users/badges-points/" + id,
     method: "GET",
     headers: {
       Authorization: true,
@@ -12,9 +11,9 @@ const getBagdesPoints = async () => {
   return response;
 };
 
-const getMyHistories = async () => {
+const getMyHistories = async (id) => {
   let response = await fetchApi({
-    uriPath: "/users/my-histories",
+    uriPath: "/users/histories/" + parseInt(id),
     method: "GET",
     headers: {
       Authorization: true,
@@ -23,13 +22,14 @@ const getMyHistories = async () => {
   return response;
 };
 
-const getMyGames = async () => {
+const getMyGames = async (id) => {
   let response = await fetchApi({
     uriPath: "/users/my-games",
-    method: "GET",
+    method: "POST",
     headers: {
       Authorization: true,
     },
+    data: { userId: parseInt(id) },
   });
   return response;
 };

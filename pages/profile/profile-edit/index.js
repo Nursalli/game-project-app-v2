@@ -19,6 +19,7 @@ import Loading from "../../../components/Loading";
 import { useProfileEditService } from "../../../module/profile/services/service";
 import { useRouter } from "next/router";
 import Swal from "sweetalert2";
+import authUser from "../../../utils/authUser";
 
 function Index() {
   const { isLoading } = useSelector((state) => state.app);
@@ -57,7 +58,7 @@ function Index() {
 
   useEffect(() => {
     const fetchData = async () => {
-      await handleGetBio();
+      await handleGetBio(await authUser());
     };
     fetchData();
   }, []);

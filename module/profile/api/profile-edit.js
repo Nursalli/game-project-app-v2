@@ -1,9 +1,9 @@
 import fetchApi from "../../../utils/fetchApi";
 import authUser from "../../../utils/authUser";
 
-const getBio = async () => {
+const getBio = async (id) => {
   let response = await fetchApi({
-    uriPath: "/users/bio/" + (await authUser()),
+    uriPath: "/users/bio/" + id,
     method: "GET",
     headers: {
       Authorization: true,
