@@ -5,9 +5,9 @@ import { useSelector } from "react-redux";
 import authUser from "../utils/authUser";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import Bronze from "../assets/Bronze.png";
-import Gold from "../assets/Gold.png";
-import Platinum from "../assets/Platinum.png";
+import Bronze from "../assets/Badge-Bronze.svg";
+import Gold from "../assets/Badge-Gold.svg";
+import Platinum from "../assets/Badge-Platinum.svg";
 
 export default function Profiltron() {
   const { user } = useSelector((state) => state.profileEdit);
