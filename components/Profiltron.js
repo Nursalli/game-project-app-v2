@@ -6,8 +6,8 @@ import authUser from "../utils/authUser";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import Bronze from "../assets/Bronze.png";
-import Glod from "../assets/Gold.png";
-import Platinm from "../assets/Platinum.png";
+import Gold from "../assets/Gold.png";
+import Platinum from "../assets/Platinum.png";
 
 export default function Profiltron() {
   const { user } = useSelector((state) => state.profileEdit);
@@ -15,7 +15,7 @@ export default function Profiltron() {
   const router = useRouter();
   const { id } = router.query;
   const [isUser, setIsUser] = useState(false);
-  let BadgesImage = Bronze;
+  const [BadgesImage, setBadgesImage] = useState(Bronze);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -30,13 +30,14 @@ export default function Profiltron() {
 
   useEffect(() => {
     if (badgesPoints.badge === "Bronze") {
-      BadgesImage = Bronze;
-    } else if (badgesPoints.badge === "Glod") {
-      BadgesImage = Gold;
+      setBadgesImage(Bronze);
+    } else if (badgesPoints.badge === "Gold") {
+      setBadgesImage(Gold);
     } else if (badgesPoints.badge === "Platinum") {
-      BadgesImage = Platinm;
+      setBadgesImage(Platinum);
     }
-  }, [badgesPoints]);
+  }),
+    [badgesPoints];
 
   return (
     <>
@@ -54,7 +55,7 @@ export default function Profiltron() {
           }
         />
         <div className="col-start-7 col-end-12 row-start-1 row-span-1 align-text-bottom text-2xl font-bold pt-2 ml-3 xl:ml-0">
-          <div class="flex flex-row ...">
+          <div className="flex flex-row ...">
             <div className="mr-5">{`${user.firstName} ${user.lastName}`}</div>
             <div>
               <Image src={BadgesImage} width={25} height={30} />

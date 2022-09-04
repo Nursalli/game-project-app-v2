@@ -43,9 +43,10 @@ const Profile = () => {
 
         {/* Left Side - Played Games */}
         <div className="bg-white border-solid border-[1px] border-[#D7D7D7] rounded-lg shadow-md max-h-96 pt-2 px-4 -mt-8">
-          {myGames.map((games) => {
+          {myGames.map((games, key) => {
             return (
               <PlayedGames
+                key={key}
                 gameThumbnail={games.gameThumbnail}
                 gameName={games.gameName}
                 totalPointsEarned={games.totalPointsEarned}
@@ -58,9 +59,10 @@ const Profile = () => {
         {/* Right Side - Game History */}
 
         <div className="bg-white border-solid border-[1px] border-[#D7D7D7] rounded-lg shadow-md max-h-96 pt-2 px-4 -mt-8">
-          {histories.map((history) => {
+          {histories.map((history, key) => {
             return (
               <GameHistory
+                key={key}
                 result={history.status}
                 points={history.pointsEarned}
                 gameThumbnail={history.gameThumbnail}

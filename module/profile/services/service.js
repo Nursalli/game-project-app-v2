@@ -85,7 +85,7 @@ export const useProfileEditService = () => {
 
   const handleGetBio = async (id) => {
     const response = await getBio(id);
-    if (response.success === true) {
+    if (response?.success === true) {
       dispatch(setUser(response.data));
     }
   };
@@ -98,21 +98,21 @@ export const useProfileEditService = () => {
 
   const handleGetMyGames = async (id) => {
     const response = await getMyGames(id);
-    if (response.success === true) {
+    if (response?.success === true) {
       dispatch(setMyGames(response.data));
     }
   };
 
   const handleGetMyHistories = async (id) => {
     const response = await getMyHistories(id);
-    if (response.success === true) {
+    if (response?.success === true) {
       dispatch(setHistories(response.data));
     }
   };
 
   const handleGetBagdesPoints = async (id) => {
     const response = await getBagdesPoints(id);
-    if (response.success === true) {
+    if (response?.success === true) {
       dispatch(setBadgesPoints(response.data));
     }
   };
