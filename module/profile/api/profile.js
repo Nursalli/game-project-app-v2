@@ -1,9 +1,8 @@
 import fetchApi from "../../../utils/fetchApi";
-import authUser from "../../../utils/authUser";
 
-const getBio = async (id) => {
+const getBagdesPoints = async (id) => {
   let response = await fetchApi({
-    uriPath: "/users/bio/" + id,
+    uriPath: "/users/badges-points/" + id,
     method: "GET",
     headers: {
       Authorization: true,
@@ -12,27 +11,27 @@ const getBio = async (id) => {
   return response;
 };
 
-const postEditProfile = async (data) => {
+const getMyHistories = async (id) => {
   let response = await fetchApi({
-    uriPath: "/users/edit-profile",
-    method: "POST",
+    uriPath: "/users/histories/" + parseInt(id),
+    method: "GET",
     headers: {
       Authorization: true,
     },
-    data: data,
   });
   return response;
 };
 
-const postUpdateProfilePic = async (data) => {
+const getMyGames = async (id) => {
   let response = await fetchApi({
-    uriPath: "/users/update-profile-pic",
+    uriPath: "/users/my-games",
     method: "POST",
     headers: {
       Authorization: true,
     },
-    data: data,
+    data: { userId: parseInt(id) },
   });
   return response;
 };
-export { getBio, postEditProfile, postUpdateProfilePic };
+
+export { getBagdesPoints, getMyHistories, getMyGames };
