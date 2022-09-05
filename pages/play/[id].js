@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import { setRunningGame } from '../../reducer/game.reducer';
 import { useRouter } from 'next/router';
 import axios from 'axios';
+import calculateSuit from '../../utils/suitScript'
 
 const Play = () => {
   const dispatch = useDispatch();
@@ -51,34 +52,55 @@ const Play = () => {
 	}, [id, dispatch, thisGameState])
 	
 	const handleSuitClick = (e) => {
-    const userInput = e.currentTarget.value;
-
-    const availableSuit = ["rock", "scissors", "paper"]
-    const computerInput = availableSuit[Math.floor(Math.random()*availableSuit.length)];
-
-    // const result = calculateSuit(userInput, computerInput);
-    const result = "win";
-
-    const pushedResult = {
-      round: thisGameState.runningRound.length + 1,
-      playerChoice: userInput,
-      computerChoice: computerInput,
-      result: result
+    if(readyInput === true && gameFinished === false) {
+      const userInput = e.currentTarget.value;
+  
+      const availableSuit = ["rock", "scissors", "paper"]
+      const computerInput = availableSuit[Math.floor(Math.random()*availableSuit.length)];
+  
+      const result = calculateSuit(userInput, computerInput);
+  
+      const pushedResult = {
+        round: thisGameState.runningRound.length + 1,
+        playerChoice: userInput,
+        computerChoice: computerInput,
+        result: result
+      }
+      
+      const newGameState = JSON.parse(JSON.stringify(thisGameState));
+      newGameState.runningRound.push(pushedResult);
+  
+      setThisGameState(newGameState);
+      dispatch(setRunningGame(newGameState));
+  
+      setReadyInput(false);
+  
+      if(Number(newGameState.runningRound.length) === Number(game.numberOfRounds)) {
+        setGameFinished(true);
+      };
     }
-    
-    const newGameState = JSON.parse(JSON.stringify(thisGameState));
-    newGameState.runningRound.push(pushedResult);
-
-    setThisGameState(newGameState);
-    dispatch(setRunningGame(newGameState));
-
-    setReadyInput(false);
-		console.log(e.currentTarget.value + " clicked")
 	};
 
   const handleRefreshClick = (e) => {
+    if(gameFinished === true) {
+      setThisGameState(
+        {
+          gameId: id,
+          requiredRound: game.numberOfRounds,
+          runningRound: []
+        }
+      )
+      dispatch(setRunningGame(
+        {
+          gameId: id,
+          requiredRound: game.numberOfRounds,
+          runningRound: []
+        }
+      ))
+      setGameFinished(false);
+    }
+    console.log("refresh clicked")
     setReadyInput(true);
-		console.log("refresh clicked")
 	};
 
 	return (
@@ -119,7 +141,7 @@ const Play = () => {
 
 					{/* Refresh Button */}
 					<div className="row-start-5 col-start-2 flex justify-center items-center">
-						<button className="cursor-pointer active:bg-slate-200 h-10 w-10 lg:h-16 lg:w-16 xl:h-20 xl:w-20 bg-[length:35px_35px] lg:bg-[length:60px_60px] xl:bg-[length:70px_70px] bg-cover bg-no-repeat bg-center rounded-full" style={{backgroundImage : "url(/img/refresh.png)"}} onClick={handleRefreshClick} />
+						<button className="cursor-pointer active:bg-slate-200 h-10 w-10 lg:h-16 lg:w-16 xl:h-20 xl:w-20 lg:bg-[length:60px_60px] xl:bg-[length:70px_70px] bg-cover bg-no-repeat bg-center rounded-full" style={{backgroundImage : "url(/img/refresh.png)"}} onClick={handleRefreshClick} />
 					</div>
 
 					{/* Opponent Side */}
