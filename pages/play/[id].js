@@ -3,53 +3,88 @@ import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
 import { useDispatch, useSelector } from 'react-redux';
 import { useState, useEffect } from 'react';
-import { setRunningGame } from '../../reducer/game.reducer';
+import { setRunningGame, setInitGame } from '../../reducer/game.reducer';
 import { useRouter } from 'next/router';
 import axios from 'axios';
-import calculateSuit from '../../utils/suitScript'
+import { calculateSuit, calculateRounds } from '../../utils/suitScript'
 
 const Play = () => {
   const dispatch = useDispatch();
 	const router = useRouter();
-  
   const { id } = router.query;
+  const userName = useSelector((state) => state.user.name).toUpperCase();
+  const token = useSelector((state) => state.user.token);
   const [game, setGame] = useState({});
 	const [readyInput, setReadyInput] = useState(true);
 	const [gameFinished, setGameFinished] = useState(false);
-
+  const [currentRound, setCurrentRound] = useState(1);
+  const [gameRoundColor, setGameRoundColor] = useState(["bg-white", "bg-white", "bg-white"]);
+  const [lastRoundResult, setLastRoundResult] = useState("Ready");
   const [thisGameState, setThisGameState] = useState(useSelector((state) => state.game.runningGame));
+  const [initGameState, setInitGameState] = useState(useSelector((state) => state.game.initGame));
+
+  useEffect(() => {
+    if (id) {
+      axios
+        .get(process.env.NEXT_PUBLIC_BASE_URL + "games/" + id, "", "")
+        .then((res) => {
+          setGame(res.data?.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [id]);
 
 	useEffect(() => {
-    console.log(thisGameState);
-		if(!thisGameState && id) {			
-        axios
-          .get(process.env.NEXT_PUBLIC_BASE_URL + "games/" + id, "", "")
-          .then((res) => {
-            setGame(res.data?.data);
-            setThisGameState(
-              {
-                gameId: id,
-                requiredRound: res.data?.data?.numberOfRounds,
-                runningRound: []
-              }
-            )
-            dispatch(setRunningGame(
-              {
-                gameId: id,
-                requiredRound: res.data?.data?.numberOfRounds,
-                runningRound: []
-              }
-            ))
-            setReadyInput(true);
-            setGameFinished(false);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-		} else {
-      console.log("initiated")
+		if(!thisGameState && id) {
+        axios({
+          method: 'post',
+          url: process.env.NEXT_PUBLIC_BASE_URL + "games/play/init",
+          headers: {
+            Authorization: "Bearer " + token,
+          }, 
+          data: {
+            id: Number(id),
+            playedAt: new Date().toISOString()
+          }
+        })
+        .then((res) => {
+          setInitGameState(res.data?.data?.id);
+          dispatch(setInitGame(res.data?.data?.id));
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+        setThisGameState(
+          {
+            gameId: id,
+            requiredRound: game.numberOfRounds,
+            runningRound: []
+          }
+        )
+        dispatch(setRunningGame(
+          {
+            gameId: id,
+            requiredRound: game.numberOfRounds,
+            runningRound: []
+          }
+        ))
+        setReadyInput(true);
+        setGameFinished(false);
+		} else if (thisGameState && id) {
+        setCurrentRound(thisGameState.runningRound.length);
+        if(thisGameState.runningRound.length === Number(game.numberOfRounds)) {
+          const gameResult = calculateRounds(thisGameState.runningRound[0].result, thisGameState.runningRound[1].result, thisGameState.runningRound[2].result);
+          if(gameResult === "win" || gameResult === "lose") {
+            setLastRoundResult(`You ${gameResult.toUpperCase()} the Game!`)
+          } else {
+            setLastRoundResult(`Game ${gameResult.toUpperCase()}!`)
+          }
+          setGameFinished(true);
+        }
     }
-	}, [id, dispatch, thisGameState])
+	}, [id, dispatch, thisGameState, game, token, initGameState])
 	
 	const handleSuitClick = (e) => {
     if(readyInput === true && gameFinished === false) {
@@ -66,6 +101,18 @@ const Play = () => {
         computerChoice: computerInput,
         result: result
       }
+
+      const newGameRoundColor = gameRoundColor.slice();
+      if (result === "win") {
+        newGameRoundColor[thisGameState.runningRound.length] = "bg-green-500"
+      } else if (result === "lose") {
+        newGameRoundColor[thisGameState.runningRound.length] = "bg-red-500"
+      } else {
+        newGameRoundColor[thisGameState.runningRound.length] = "bg-zinc-300"
+      }
+      setGameRoundColor(newGameRoundColor);
+
+      setLastRoundResult(result.toUpperCase())
       
       const newGameState = JSON.parse(JSON.stringify(thisGameState));
       newGameState.runningRound.push(pushedResult);
@@ -76,6 +123,31 @@ const Play = () => {
       setReadyInput(false);
   
       if(Number(newGameState.runningRound.length) === Number(game.numberOfRounds)) {
+        const gameResult = calculateRounds(newGameState.runningRound[0].result, newGameState.runningRound[1].result, newGameState.runningRound[2].result);
+        if(gameResult === "win" || gameResult === "lose") {
+          setLastRoundResult(`You ${gameResult.toUpperCase()} the Game!`)
+        } else {
+          setLastRoundResult(`Game ${gameResult.toUpperCase()}!`)
+        }
+        axios({
+          method: 'post',
+          url: process.env.NEXT_PUBLIC_BASE_URL + "games/play/com",
+          headers: {
+            Authorization: "Bearer " + token,
+          }, 
+          data: {
+            id: Number(id),
+            idHistory: Number(initGameState),
+            status: gameResult.toUpperCase(),
+            metaData: Object.assign({}, newGameState.runningRound)
+          }
+        })
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
         setGameFinished(true);
       };
     }
@@ -83,6 +155,24 @@ const Play = () => {
 
   const handleRefreshClick = (e) => {
     if(gameFinished === true) {
+      axios({
+        method: 'post',
+        url: process.env.NEXT_PUBLIC_BASE_URL + "games/play/init",
+        headers: {
+          Authorization: "Bearer " + token,
+        }, 
+        data: {
+          id: Number(id),
+          playedAt: new Date().toISOString()
+        }
+      })
+      .then((res) => {
+        setInitGameState(res.data?.data?.id);
+        dispatch(setInitGame(res.data?.data?.id));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
       setThisGameState(
         {
           gameId: id,
@@ -97,10 +187,17 @@ const Play = () => {
           runningRound: []
         }
       ))
+      
+      setLastRoundResult("Ready");
+      setGameRoundColor(["bg-white", "bg-white", "bg-white"])
       setGameFinished(false);
+      setReadyInput(true);
+      setCurrentRound(1);
+    } else {
+      setLastRoundResult("Ready");
+      setReadyInput(true);
+      setCurrentRound(thisGameState.runningRound.length + 1);
     }
-    console.log("refresh clicked")
-    setReadyInput(true);
 	};
 
 	return (
@@ -110,19 +207,19 @@ const Play = () => {
 					{/* Title */}
 					<div className="row-span-1 col-start-2 text-center">
 						<p className='lg:text-xl xl:text-2xl font-semibold'>Rock-Paper-Scissors Random</p>
-						<p className='lg:text-xl xl:text-2xl font-semibold'>Round 3</p>
+						<p className='lg:text-xl xl:text-2xl font-semibold'>Round {currentRound}</p>
 					</div>
 
 					{/* Round Status */}
 					<div className="row-start-2 col-start-2 flex justify-center items-center">
-						<div className="rounded-full bg-zinc-300 h-4 w-4 lg:h-5 lg:w-5 xl:h-7 xl:w-7 mt-3 mb-1 mx-2"></div>
-						<div className="rounded-full bg-zinc-300 h-4 w-4 lg:h-5 lg:w-5 xl:h-7 xl:w-7 mt-3 mb-1 mx-2"></div>
-						<div className="rounded-full bg-zinc-300 h-4 w-4 lg:h-5 lg:w-5 xl:h-7 xl:w-7 mt-3 mb-1 mx-2"></div>
+						<div className={`rounded-full ${gameRoundColor[0]} border-solid border-[1px] border-[#D7D7D7] h-4 w-4 lg:h-5 lg:w-5 xl:h-7 xl:w-7 mt-3 mb-1 mx-2`}></div>
+						<div className={`rounded-full ${gameRoundColor[1]} border-solid border-[1px] border-[#D7D7D7] h-4 w-4 lg:h-5 lg:w-5 xl:h-7 xl:w-7 mt-3 mb-1 mx-2`}></div>
+						<div className={`rounded-full ${gameRoundColor[2]} border-solid border-[1px] border-[#D7D7D7] h-4 w-4 lg:h-5 lg:w-5 xl:h-7 xl:w-7 mt-3 mb-1 mx-2`}></div>
 					</div>
 					
 					{/* Player Side */}
 					<div className="row-start-3 col-start-1 text-xl lg:text-3xl xl:text-4xl font-bold text-center">
-						<p>YOU</p>
+						<p>{userName}</p>
 
 					</div>
 					<div className="row-start-4 col-start-1 flex justify-center items-center mt-2">
@@ -136,7 +233,7 @@ const Play = () => {
 
 					{/* Winning Status */}
 					<div className="row-start-4 col-start-2 flex justify-center items-end">
-						<div className="text-2xl lg:text-5xl xl:text-6xl font-black flex items-center text-center h-16 w-16 lg:h-28 lg:w-28 xl:h-36 xl:w-36 mt-2">YOU WIN</div>
+						<div className="text-2xl lg:text-5xl xl:text-6xl font-black flex items-center text-center mb-8">{lastRoundResult}</div>
 					</div>
 
 					{/* Refresh Button */}
@@ -146,7 +243,7 @@ const Play = () => {
 
 					{/* Opponent Side */}
 					<div className="row-start-3 col-start-3 text-xl lg:text-3xl xl:text-4xl font-bold text-center">
-						<p>OPPONENT</p>
+						<p>COMPUTER</p>
 					</div>
 					<div className="row-start-4 col-start-3 flex justify-center items-center mt-2">
 						<button className="focus:bg-slate-200 bg-[length:35px_20px] lg:bg-[length:65px_45px] xl:bg-[length:85px_65px] bg-no-repeat bg-center border-solid border-[4px] lg:border-[8px] border-red-500 rounded-full h-16 w-16 lg:h-28 lg:w-28 xl:h-36 xl:w-36 mt-3 mx-2" style={{backgroundImage: "url(/img/batu.png)"}} disabled={true} />
