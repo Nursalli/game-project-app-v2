@@ -15,15 +15,23 @@ const Play = () => {
   const [game, setGame] = useState({});
 	const [readyInput, setReadyInput] = useState(true);
 	const [gameFinished, setGameFinished] = useState(false);
-  const [thisGameState, setThisGameState] = useState(useSelector((state) => state.game.runningGame).filter((game) => game.id == id));
+
+  const [thisGameState, setThisGameState] = useState(useSelector((state) => state.game.runningGame));
 
 	useEffect(() => {
     console.log(thisGameState);
-		if(thisGameState.length === 0 && id) {			
+		if(!thisGameState && id) {			
         axios
           .get(process.env.NEXT_PUBLIC_BASE_URL + "games/" + id, "", "")
           .then((res) => {
             setGame(res.data?.data);
+            setThisGameState(
+              {
+                gameId: id,
+                requiredRound: res.data?.data?.numberOfRounds,
+                runningRound: []
+              }
+            )
             dispatch(setRunningGame(
               {
                 gameId: id,
@@ -31,6 +39,8 @@ const Play = () => {
                 runningRound: []
               }
             ))
+            setReadyInput(true);
+            setGameFinished(false);
           })
           .catch((err) => {
             console.log(err);
@@ -40,9 +50,35 @@ const Play = () => {
     }
 	}, [id, dispatch, thisGameState])
 	
-	const handleClick = (e) => {
+	const handleSuitClick = (e) => {
+    const userInput = e.currentTarget.value;
+
+    const availableSuit = ["rock", "scissors", "paper"]
+    const computerInput = availableSuit[Math.floor(Math.random()*availableSuit.length)];
+
+    // const result = calculateSuit(userInput, computerInput);
+    const result = "win";
+
+    const pushedResult = {
+      round: thisGameState.runningRound.length + 1,
+      playerChoice: userInput,
+      computerChoice: computerInput,
+      result: result
+    }
+    
+    const newGameState = JSON.parse(JSON.stringify(thisGameState));
+    newGameState.runningRound.push(pushedResult);
+
+    setThisGameState(newGameState);
+    dispatch(setRunningGame(newGameState));
+
     setReadyInput(false);
-		console.log("clicked")
+		console.log(e.currentTarget.value + " clicked")
+	};
+
+  const handleRefreshClick = (e) => {
+    setReadyInput(true);
+		console.log("refresh clicked")
 	};
 
 	return (
@@ -68,18 +104,12 @@ const Play = () => {
 
 					</div>
 					<div className="row-start-4 col-start-1 flex justify-center items-center mt-2">
-						<button disabled={!readyInput} onClick={handleClick}>
-							<div className="active:bg-slate-200 bg-[length:35px_20px] lg:bg-[length:65px_45px] xl:bg-[length:85px_65px] bg-no-repeat bg-center border-solid border-[4px] lg:border-[8px] border-red-500 rounded-full h-16 w-16 lg:h-28 lg:w-28 xl:h-36 xl:w-36 mt-3 mx-2" style={{backgroundImage: "url(/img/batu.png)"}} />
-						</button>
-						<button disabled={!readyInput} onClick={handleClick}>
-							<div className="active:bg-slate-200 bg-[length:30px_40px] lg:bg-[length:60px_70px] xl:bg-[length:80px_90px] bg-no-repeat bg-center border-solid border-[4px] lg:border-[8px] border-green-500 rounded-full h-16 w-16 lg:h-28 lg:w-28 xl:h-36 xl:w-36 mt-3 mx-2" style={{backgroundImage: "url(/img/gunting.png)"}} />
-						</button>
+            <button className="focus:bg-slate-200 bg-[length:35px_20px] lg:bg-[length:65px_45px] xl:bg-[length:85px_65px] bg-no-repeat bg-center border-solid border-[4px] lg:border-[8px] border-red-500 rounded-full h-16 w-16 lg:h-28 lg:w-28 xl:h-36 xl:w-36 mt-3 mx-2" style={{backgroundImage: "url(/img/batu.png)"}} disabled={!readyInput} onClick={handleSuitClick} value="rock" />
+						<button className="focus:bg-slate-200 bg-[length:30px_40px] lg:bg-[length:60px_70px] xl:bg-[length:80px_90px] bg-no-repeat bg-center border-solid border-[4px] lg:border-[8px] border-green-500 rounded-full h-16 w-16 lg:h-28 lg:w-28 xl:h-36 xl:w-36 mt-3 mx-2" style={{backgroundImage: "url(/img/gunting.png)"}} disabled={!readyInput} onClick={handleSuitClick} value="scissors" />
 					</div>
 
 					<div className="row-start-5 col-start-1 flex justify-center content-start pb-10">
-						<button disabled={!readyInput} onClick={handleClick}>
-							<div className="active:bg-slate-200 bg-[length:25px_35px] lg:bg-[length:50px_80px] xl:bg-[length:70px_100px] bg-no-repeat bg-center border-solid border-[4px] lg:border-[8px] border-yellow-500 rounded-full h-16 w-16 lg:h-28 lg:w-28 xl:h-36 xl:w-36" style={{backgroundImage: "url(/img/kertas.png)"}} />
-						</button>
+						<button className="focus:bg-slate-200 bg-[length:25px_35px] lg:bg-[length:50px_80px] xl:bg-[length:70px_100px] bg-no-repeat bg-center border-solid border-[4px] lg:border-[8px] border-yellow-500 rounded-full h-16 w-16 lg:h-28 lg:w-28 xl:h-36 xl:w-36" style={{backgroundImage: "url(/img/kertas.png)"}} disabled={!readyInput} onClick={handleSuitClick} value="paper" />
 					</div>
 
 					{/* Winning Status */}
@@ -89,7 +119,7 @@ const Play = () => {
 
 					{/* Refresh Button */}
 					<div className="row-start-5 col-start-2 flex justify-center items-center">
-						<button className="cursor-pointer active:bg-slate-200 h-10 w-10 lg:h-16 lg:w-16 xl:h-20 xl:w-20 bg-[length:35px_35px] lg:bg-[length:60px_60px] xl:bg-[length:70px_70px] bg-cover bg-no-repeat bg-center rounded-full" style={{backgroundImage : "url(/img/refresh.png)"}} />
+						<button className="cursor-pointer active:bg-slate-200 h-10 w-10 lg:h-16 lg:w-16 xl:h-20 xl:w-20 bg-[length:35px_35px] lg:bg-[length:60px_60px] xl:bg-[length:70px_70px] bg-cover bg-no-repeat bg-center rounded-full" style={{backgroundImage : "url(/img/refresh.png)"}} onClick={handleRefreshClick} />
 					</div>
 
 					{/* Opponent Side */}
@@ -97,17 +127,11 @@ const Play = () => {
 						<p>OPPONENT</p>
 					</div>
 					<div className="row-start-4 col-start-3 flex justify-center items-center mt-2">
-						<button disabled={true}>
-							<div className="active:bg-slate-200 bg-[length:35px_20px] lg:bg-[length:65px_45px] xl:bg-[length:85px_65px] bg-no-repeat bg-center border-solid border-[4px] lg:border-[8px] border-red-500 rounded-full h-16 w-16 lg:h-28 lg:w-28 xl:h-36 xl:w-36 mt-3 mx-2" style={{backgroundImage: "url(/img/batu.png)"}} />
-						</button>
-						<button disabled={true}>
-							<div className="active:bg-slate-200 bg-[length:30px_40px] lg:bg-[length:60px_70px] xl:bg-[length:80px_90px] bg-no-repeat bg-center border-solid border-[4px] lg:border-[8px] border-green-500 rounded-full h-16 w-16 lg:h-28 lg:w-28 xl:h-36 xl:w-36 mt-3 mx-2" style={{backgroundImage: "url(/img/gunting.png)"}} />
-						</button>
+						<button className="focus:bg-slate-200 bg-[length:35px_20px] lg:bg-[length:65px_45px] xl:bg-[length:85px_65px] bg-no-repeat bg-center border-solid border-[4px] lg:border-[8px] border-red-500 rounded-full h-16 w-16 lg:h-28 lg:w-28 xl:h-36 xl:w-36 mt-3 mx-2" style={{backgroundImage: "url(/img/batu.png)"}} disabled={true} />
+						<button className="focus:bg-slate-200 bg-[length:30px_40px] lg:bg-[length:60px_70px] xl:bg-[length:80px_90px] bg-no-repeat bg-center border-solid border-[4px] lg:border-[8px] border-green-500 rounded-full h-16 w-16 lg:h-28 lg:w-28 xl:h-36 xl:w-36 mt-3 mx-2" style={{backgroundImage: "url(/img/gunting.png)"}} disabled={true} />
 					</div>
 					<div className="row-start-5 col-start-3 flex justify-center content-start pb-10">
-						<button disabled={true}>
-							<div className="active:bg-slate-200 bg-[length:25px_35px] lg:bg-[length:50px_80px] xl:bg-[length:70px_100px] bg-no-repeat bg-center border-solid border-[4px] lg:border-[8px] border-yellow-500 rounded-full h-16 w-16 lg:h-28 lg:w-28 xl:h-36 xl:w-36" style={{backgroundImage: "url(/img/kertas.png)"}} />
-						</button>
+						<button className="focus:bg-slate-200 bg-[length:25px_35px] lg:bg-[length:50px_80px] xl:bg-[length:70px_100px] bg-no-repeat bg-center border-solid border-[4px] lg:border-[8px] border-yellow-500 rounded-full h-16 w-16 lg:h-28 lg:w-28 xl:h-36 xl:w-36" style={{backgroundImage: "url(/img/kertas.png)"}} disabled={true} />
 					</div>
 
 				</div>
