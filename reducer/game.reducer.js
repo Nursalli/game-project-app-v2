@@ -5,7 +5,7 @@ const gameSlice = createSlice({
   initialState: { runningGame: [] },
   reducers: {
     setRunningGame: (state, { payload }) => {
-      state.runningGame = payload;
+      state.runningGame.push(payload);
     },
   },
 });
