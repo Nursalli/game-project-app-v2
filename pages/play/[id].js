@@ -129,6 +129,15 @@ const Play = () => {
         } else {
           setLastRoundResult(`Game ${gameResult.toUpperCase()}!`)
         }
+
+        const metaData = [];
+        newGameState.runningRound.map((round) => {
+          metaData.push({
+            playerChoice: round.playerChoice,
+            comChoice: round.computerChoice
+          })
+        })
+
         axios({
           method: 'post',
           url: process.env.NEXT_PUBLIC_BASE_URL + "games/play/com",
@@ -139,7 +148,7 @@ const Play = () => {
             id: Number(id),
             idHistory: Number(initGameState),
             status: gameResult.toUpperCase(),
-            metaData: Object.assign({}, newGameState.runningRound)
+            metaData: metaData
           }
         })
         .then((res) => {
