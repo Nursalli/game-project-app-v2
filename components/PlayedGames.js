@@ -1,8 +1,5 @@
 import React, { useEffect } from "react";
 import Link from "next/link";
-import { useProfileEditService } from "../module/profile/services/service";
-import { useSelector } from "react-redux";
-import { useRouter } from "next/router";
 
 export default function PlayedGames(props) {
   return (
