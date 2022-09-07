@@ -1,5 +1,6 @@
 import React from 'react'
 import Link from 'next/link'
+import axios from 'axios'
 
 export default function GameCard(props) {    
   return (
