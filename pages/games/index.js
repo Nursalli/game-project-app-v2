@@ -1,7 +1,6 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
 import { useRouter } from "next/router";
-
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
 import GameCard from '../../components/GameCard';
@@ -22,18 +21,7 @@ function Index() {
       console.log(err);
       });
   })
-
-  const handlePlay = () => {
-		axios
-		.post(process.env.NEXT_PUBLIC_BASE_URL + "games/view-count/" + id)
-		.then((res) => {
-			router.push("/games/detail-games/" + id);
-		})
-		.catch((err) => {
-			router.push("/games");
-			console.log(err);
-		});
-	};  
+  
   return (
     <>
       <Navbar />
@@ -42,16 +30,15 @@ function Index() {
         {
           games.map((game) => {
             return(
-              <div key={game.id}>
-                <GameCard 
-                  thumbnails= {game.thumbnails}
-                  title= {game.title}
-                  description= {game.description}
-                  viewCount= {game.viewCount}
-                  playCount= {game.playCount}
-                  handlePlay= {handlePlay} 
-                />
-              </div>
+              <GameCard 
+                key={game.id}
+                id = {game.id}
+                thumbnails= {game.thumbnails}
+                title= {game.title}
+                description= {game.description}
+                viewCount= {game.viewCount}
+                playCount= {game.playCount}
+              />
             )
           })
         }  
