@@ -21,7 +21,7 @@ export default function GameCard(props) {
             </div>
             <div>
                 <Link href={`/games/detail-games/${props.id}`}>
-                    <button className="bg-white hover:bg-[#70C1B3] text-[#70C1B3] hover:text-white font-semibold hover:font-bold border-solid border-[1px] border-[#70C1B3] rounded-lg w-full h-10" onClick={() => axios.post("/games/view-count/" + props.id).then((res) => console.log(res)).catch((err) => console.log(err))}>
+                    <button className="bg-white hover:bg-[#70C1B3] text-[#70C1B3] hover:text-white font-semibold hover:font-bold border-solid border-[1px] border-[#70C1B3] rounded-lg w-full h-10" onClick={() => axios.post(process.env.NEXT_PUBLIC_BASE_URL + "games/view-count/"+ props.id).then((res) => console.log(res)).catch((err) => console.log(err))}>
                         Play This Game
                     </button>
                 </Link>
