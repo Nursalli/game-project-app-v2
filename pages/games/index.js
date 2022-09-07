@@ -1,6 +1,5 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
-import { useRouter } from "next/router";
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
 import GameCard from '../../components/GameCard';
