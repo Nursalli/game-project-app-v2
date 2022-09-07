@@ -96,7 +96,7 @@ const Games = () => {
     axios
       .post(process.env.NEXT_PUBLIC_BASE_URL + "games/play-count/" + id, {}, config)
       .then((res) => {
-        router.push("/playing/" + id);
+        router.push("/play/" + id);
       })
       .catch((err) => {
         router.push("/login");
