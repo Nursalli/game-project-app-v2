@@ -8,8 +8,6 @@ import axios from 'axios';
 
 function Index() {
   const [games, setGame] = useState([]);
-  const router = useRouter();
-  const { id } = router.query;
 
   useEffect(() => {
     axios
