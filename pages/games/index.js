@@ -30,7 +30,7 @@ function Index() {
               <GameCard 
                 key={game.id}
                 id = {game.id}
-                thumbnails= {game.thumbnails}
+                thumbnails= {game.thumbnail}
                 title= {game.title}
                 description= {game.description}
                 viewCount= {game.viewCount}
