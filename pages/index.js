@@ -33,7 +33,7 @@ export default function Home() {
               <div key={game.id}>
                 <GameCard
                   id = {game.id} 
-                  thumbnails= {game.thumbnail}
+                  thumbnail= {game.thumbnail}
                   title= {game.title}
                   description= {game.description}
                   viewCount= {game.viewCount}
