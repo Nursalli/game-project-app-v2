@@ -19,7 +19,7 @@
     "react-awesome-reveal": "^4.0.1",
     "react-datepicker": "^4.8.0",
     "react-dom": "18.2.0",
-    "react-redux": "^8.0.2",
+    "react-redux": "^8.0.4",
     "react-spinners": "^0.13.4",
     "sweetalert2": "^11.4.29"
   },
