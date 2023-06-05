@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@emotion/react": "^11.10.0",
-    "@reduxjs/toolkit": "^1.8.5",
+    "@reduxjs/toolkit": "^1.9.5",
     "axios": "^0.27.2",
     "firebase": "^9.9.3",
     "moment": "^2.29.4",
